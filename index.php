@@ -17,7 +17,7 @@
 			//echo "\n";
 			$ipClient = ip2long(getUserIpAddr());
 			//echo $ipClient;
-			if($ipRazvan != $ipClient){
+			if($ipRazvan == $ipClient){
 			    $counter++ ; 
 			    $ipFile = fopen("ip.txt", "a");
 			    fwrite($ipFile,"\n");
@@ -28,27 +28,30 @@
 			    fwrite($ipFile,date("h:i:sa"));
 			    fclose($ipFile);
 			}
-			echo " <strong> Numar de vizitatori astazi: ". $counter . " </strong > " ; 
-			$counterToday = fopen("counterToday.txt", "r" ) ; 
-			
+			//echo " <strong> Numar de vizitatori astazi: ". $counter . " </strong > " ; 
+			$counterToday = fopen("counterToday.txt", "w" ) ; 
+			fwrite($counterToday, $counter);
+			fclose($counterToday);
 			$minute = date("i");
             $ora = date("h");
-            //echo "\n".$minute;
+            $counterToday = fopen("counterToday.txt", "r");
             $totalNumber =  fgets($counterTotal);
             $todayNumber = fgets($counterToday);
-            echo $todayNumber;
-            echo " <strong> Numar de vizitatori in total: ". $totalNumber . " </strong > " ; 
+            //echo " <strong> Numar de vizitatori in total: ". $totalNumber . " </strong > " ; 
             $minute = date("i");
             $ora = date("H");
             if($ora >= 23 && $minute >= 59){
+                $counter = 0;
                 $TotalNou = $totalNumber + $todayNumber;
+                //echo $TotalNou;
                 fclose($counterTotal);
                 $counterTotal = fopen("counterTotal.txt", "w+");
                 fwrite($counterTotal, $TotalNou);
                 $zero = 0;
                 fclose($counterToday);
-                $counterToday = fopen("counterToday.txt", "w");
-                fwrite($counterToday, $zero);
+                $counterToday = fopen("counterToday.txt", "c");
+                fwrite($counterToday, 0);
+                fclose($counterToday);
             }
 	} 
     function getUserIpAddr(){
